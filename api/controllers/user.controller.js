@@ -1,6 +1,6 @@
 import bcryptjs from "bcryptjs";
 import User from "../models/user.model.js";
-import { errorHandler } from "../utils/errorHandler.js";
+import { errorHandler } from "../utils/error.js";
 
 export const test = (req, res) => {
   res.json({
@@ -10,9 +10,7 @@ export const test = (req, res) => {
 
 export const updateUser = async (req, res, next) => {
   if (req.user.id !== req.params.id)
-    return next(
-      errorHandler(401, "You are not authorised to update this user")
-    );
+    return next(errorHandler(401, "You can only update your own account!"));
   try {
     if (req.body.password) {
       req.body.password = bcryptjs.hashSync(req.body.password, 10);
