@@ -1,6 +1,7 @@
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 export default function Search() {
+  const navigate = useNavigate();
   const [sideBarData, setSideBarData] = useState({
     searchTerm: "",
     type: "all",
@@ -10,6 +11,49 @@ export default function Search() {
     sort: "created_at",
     order: "desc",
   });
+
+  const [loading, setLoading] = useState(false);
+  const [listings, setListings] = useState([]);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get("searchTerm");
+    const typeFromUrl = urlParams.get("type");
+    const parkingFromUrl = urlParams.get("parking");
+    const furnishedFromUrl = urlParams.get("furnished");
+    const offerFromUrl = urlParams.get("offer");
+    const sortFromUrl = urlParams.get("sort");
+    const orderFromUrl = urlParams.get("order");
+    if (
+      searchTermFromUrl ||
+      typeFromUrl ||
+      parkingFromUrl ||
+      furnishedFromUrl ||
+      offerFromUrl ||
+      sortFromUrl ||
+      orderFromUrl
+    ) {
+      setSideBarData({
+        searchTerm: searchTermFromUrl || "",
+        type: typeFromUrl || "all",
+        parking: parkingFromUrl === "true" ? true : false,
+        furnished: furnishedFromUrl === "true" ? true : false,
+        offer: offerFromUrl === "true" ? true : false,
+        sort: sortFromUrl || "created_at",
+        order: orderFromUrl || "desc",
+      });
+    }
+    const fetchListings = async () => {
+      setLoading(true);
+      const searchQuery = urlParams.toString();
+      const res = await fetch(`/api/listing/get?${searchQuery}`);
+      const data = await res.json();
+      setListings(data);
+      setLoading(false);
+    };
+
+    fetchListings();
+  }, [location.search]);
 
   const handleChange = (e) => {
     if (
@@ -43,6 +87,16 @@ export default function Search() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const urlParams = new URLSearchParams();
+    urlParams.set("searchTerm", sideBarData.searchTerm);
+    urlParams.set("type", sideBarData.type);
+    urlParams.set("parking", sideBarData.parking);
+    urlParams.set("furnished", sideBarData.furnished);
+    urlParams.set("offer", sideBarData.offer);
+    urlParams.set("sort", sideBarData.sort);
+    urlParams.set("order", sideBarData.order);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
   };
 
   return (
