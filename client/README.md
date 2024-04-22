@@ -1,3 +1,8 @@
-# Baalham Estates
+# React + Vite
 
-A React web app for an imaginary estate agent providing property listings for both rent and for sale. Public can view and search properties, logged in users can add properties, and can also edit and delete the properties they have listed.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
